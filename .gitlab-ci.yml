@@ -34,7 +34,9 @@ stages:
   - echo "python version" && python --version
   - python -m venv venv
   - source venv/bin/activate
-  - pip install .[dev]
+  - python -m pip install --upgrade pip
+  - pip install wheel
+  - pip install -e .[dev]
   - coverage run --source=src/covid_py_ml -m unittest discover -v -s src/tests
   - coverage report -m | grep TOTAL
 
@@ -42,7 +44,7 @@ stages:
 .script-win: &script-win
   - echo "this is testing"
   - echo "python version"; python --version
-  - pip install .[dev]
+  - pip install -e .[dev]
   - coverage run --source=src/covid_py_ml -m unittest discover -v -s src/tests
   - coverage xml
   - coverage report -m | Select-String "TOTAL"
