@@ -104,7 +104,7 @@ test-win-py38:                                                        # name of 
 # test job for python 3.9 running on linux
 test-linux-py39:                                                      # name of the job
   stage: test                                                         # the stage the job belongs to
-  image: python:3.9.5-alpine3.13                                     # use this docker image to run the job
+  image: python:3.9.6-buster                                          # use this docker image to run the job
   tags:
     - shared-linux                                                    # use runner with this tag
   rules:
@@ -128,7 +128,7 @@ test-linux-py39:                                                      # name of 
 # test job for python 3.8 running on linux
 test-linux-py38:                                                      # name of the job
   stage: test                                                         # the stage the job belongs to
-  image: python:3.8.10-alpine3.13                                     # use this docker image to run the job
+  image: python:3.8.11-buster                                         # use this docker image to run the job
   tags:
     - shared-linux                                                    # use runner with this tag
   rules:
