@@ -4,11 +4,14 @@ Machine learning application to predict the ICU utilization for the top 16 hospi
 
 ## Badge dashboard
 dev test coverage 
-[![coverage](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/dev/coverage.svg)](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/dev)
+[![coverage](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/dev/coverage.svg)](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/dev)  
+&nbsp;
+data-fetching test coverage
+[![coverage](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/data-fetching/coverage.svg)](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/data-fetching)  
 
 ## Dev and Test
 
-### Testing
+### Testing 
 
 Use __coverage__ and __unittest__ to run test cases and measure code coverage for just the code written for this project.  
 
