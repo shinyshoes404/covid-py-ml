@@ -3,11 +3,16 @@
 Machine learning application to predict the ICU utilization for the top 16 hospitals in Utah by analyzing data provided by the COVID Tracker suite of services.
 
 ## Badge dashboard
+
+[![coverage](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/dev/coverage.svg)](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/dev)
 dev test coverage 
-[![coverage](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/dev/coverage.svg)](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/dev)  
-&nbsp;
+  
+&nbsp;  
+&nbsp;  
+
+[![coverage](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/data-fetching/coverage.svg)](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/data-fetching)
 data-fetching test coverage
-[![coverage](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/data-fetching/coverage.svg)](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/data-fetching)  
+  
 
 ## Dev and Test
 
