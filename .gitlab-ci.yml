@@ -14,7 +14,7 @@ stages:
 # define changes anchor
 .changes: &changes
   - setup.py
-  - src/*
+  - src/**/*
   - .gitlab-ci.yml
   - pyproject.toml
 
