@@ -33,15 +33,15 @@ class TestDataGetterGetCasecountData(unittest.TestCase):
 
 
     # verify that the final data frame is the right number of columns (removed unwanted columns)
-    @mock.patch('requests.get',return_value=test_case_json) # mock the request.get() method to return the the test json data
+    @mock.patch('covid_ml.data_ops.DataGetter.get_api_data',return_value=["json",test_case_json]) # mock the method to return the the test json data
     @mock.patch('covid_ml.data_ops.DataGetter.build_df',return_value=test_df) # mock build_df() method to return the test pandas data frame
-    def test_unit_remove_columns(self, mock_build_df, mock_requests_get):
+    def test_unit_remove_columns(self, mock_build_df, mock_get_api_data):
         validation_object = DataGetter()
         validation_object.get_casecount_data()
         self.assertEqual(len(validation_object.casecount_df.columns), 2, "DataGetter.get_casecount_data: Expecting 2")
 
     # verify that the final data frame is sorted correctly
-    @mock.patch('requests.get',return_value=test_case_json) # mock the request.get() method to return the the test json data
+    @mock.patch('covid_ml.data_ops.DataGetter.get_api_data',return_value=["json",test_case_json]) # mock the method to return the the test json data
     def test_integ_correct_sort(self, mock_requests_get):
         validation_object = DataGetter()
         validation_object.get_casecount_data()
