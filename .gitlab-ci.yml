@@ -23,7 +23,7 @@ stages:
 
 ### ----------------------------------------- TEST JOBS ----------------------------------------- ###
 
-# ------------------ test scripts ---------------- #
+# ------------------ test scripts ----------------- #
 
 # using a yaml anchor to reuse test scripts
 # the "." means gitlab will ignore it as a job
