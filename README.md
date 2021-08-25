@@ -4,7 +4,7 @@ Machine learning application to predict the ICU utilization for the top 16 hospi
 
 ## Badge dashboard
 dev test coverage 
-[![pipeline status](https://git.swilsycloud.com/%{project_path}/badges/dev/coverage.svg)](https://git.swilsycloud.com/%{project_path}/badges/dev)
+[![coverage](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/dev/coverage.svg)](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/dev)
 
 ## Dev and Test
 
