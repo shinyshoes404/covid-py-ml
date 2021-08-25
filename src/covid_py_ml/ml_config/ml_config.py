@@ -5,3 +5,5 @@ class MlConfig:
         "testing" : "https://utahcovidtrack.com/api/testing",
         "icu-top16" : "https://utahcovidtrack.com/api/icu/top-16"
     }
+
+    icu_date_offset = 19
