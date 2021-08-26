@@ -55,11 +55,12 @@ class DataGetter:
             # print for logging
             print("get_casecount_data() -- " + self.casecount_raw[0] + " -- " + self.casecount_raw[1])
             return None
-             
+           
         # create the data frame from the raw json
-        self.casecount_df = self.build_df(self.casecount_raw[1], "casecountdate")
-        # remove the columns we don't want
-        self.casecount_df = self.casecount_df.drop(labels=['geoarea','retrieveddate'],axis=1)
+        self.casecount_df = self.build_df(self.casecount_raw[1], "casecountdate")        
+        # only keep the columns we want
+        self.casecount_df = self.casecount_df[['casecountdate','casecount']]  
+
 
         # return true to indicate everything worked
         return True
@@ -78,8 +79,8 @@ class DataGetter:
         self.testing_df = self.build_df(self.testing_raw[1], "testdate")
         #calculate the positive test rate
         self.testing_df['pos-test-rate'] = round(self.testing_df['peoplepositive']/self.testing_df['peopletested'],4)
-        # remove the columns we don't want
-        self.testing_df = self.testing_df.drop(labels=['geoarea','peoplepositive','peopletested','retrieveddate'],axis=1)
+        # only keep the columns we want
+        self.testing_df = self.testing_df[['testdate','pos-test-rate']]
 
         # return true to indicate everything worked
         return True
@@ -98,8 +99,8 @@ class DataGetter:
         self.icu_16_df = self.build_df(self.icu_16_raw[1], "date")
         # calculate offset date
         self.icu_16_df['offset_date'] = self.icu_16_df['date'] - pd.to_timedelta(MlConfig.icu_date_offset,unit='d')
-        # remove the columns we don't want
-        self.icu_16_df = self.icu_16_df.drop(labels=['retrieveddate','icu-top16-hosp-covid-util','date'],axis=1)
+        # only keep the columns we want
+        self.icu_16_df = self.icu_16_df[['offset_date','icu-top16-hosp-total-util']]
 
         # return true to indicate everything worked
         return True
