@@ -7,8 +7,8 @@ Machine learning application to predict the ICU utilization for the top 16 hospi
 [![coverage](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/dev/coverage.svg)](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/dev)
 dev test coverage   
 &nbsp;  
-[![coverage](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/data-fetching/coverage.svg)](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/data-fetching)
-data-fetching test coverage
+[![coverage](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/sqlite/coverage.svg)](https://git.swilsycloud.com/covid_tracker/apps/covid-py-ml/badges/sqlite)
+sqlite test coverage
   
 
 ## Dev and Test
