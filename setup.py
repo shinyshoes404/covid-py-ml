@@ -15,11 +15,8 @@ setup(
     license='MIT License',
     packages=['covid_ml','ml_config'],
     package_dir={'':'src/covid_py_ml'},
-    entry_points = { 'console_scripts' : ['send-test=py_basic_ses.entry:send_test_email',
-                    'send-email=py_basic_ses.entry:send_email']},
     install_requires=[
-        'requests',
-        'pandas'    
+        'requests','pandas', 'scikit-learn'
     ],
 
     extras_require={

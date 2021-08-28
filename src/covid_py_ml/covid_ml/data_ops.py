@@ -105,6 +105,50 @@ class DataGetter:
         # return true to indicate everything worked
         return True
 
+    
+    def combine_model_df(self):
+        # join the case count and testing data frames
+        self.independent_df = pd.merge(self.casecount_df, self.testing_df, how="inner", left_on="casecountdate", right_on="testdate")
+        # drop the extra date column and rename the other
+        self.independent_df = self.independent_df.drop(labels=['testdate'], axis=1)
+        # call the smooth_df method to smooth the data for our independent variables, this will add moving average columns to our independent_df
+        self.smooth_df(MlConfig.mv_avg_days)
 
+        # join the new model_data_df data frame with the icu 16 data
+        self.model_data_df = pd.merge(self.independent_df, self.icu_16_df, how="inner", left_on="date", right_on="offset_date")
+        # drop unneeded field
+        self.model_data_df = self.model_data_df.drop(labels=['offset_date'], axis=1)
+
+        
+
+    def smooth_df(self,mv_avg_days=7):
+
+        # smooth data for both the model and to use for predicting
+        # Model data to smooth
+        # get the list of dates from our combined data frame
+        date_arry = pd.Series(self.independent_df['casecountdate']).tolist()
+        # get moving average for test rate
+        pos_avg_test_arry = pd.Series(self.independent_df['pos-test-rate']).rolling(mv_avg_days).mean().tolist()
+        # get moving average for case count
+        casecount_avg_arry = pd.Series(self.independent_df['casecount']).rolling(mv_avg_days).mean().tolist()
+
+        # trim off the oldest mv_avg_days - 1 days of data, because they will not be able to calculate
+        for i in range(0, mv_avg_days - 1):
+            date_arry.pop(0)
+            pos_avg_test_arry.pop(0)
+            casecount_avg_arry.pop(0)
+        
+        # create a dictionary of our smooth data
+        smooth_data = {'smooth_date' : date_arry,
+                        'pos-test-mv-avg' : pos_avg_test_arry,
+                        'casecount-mv-avg': casecount_avg_arry}
+        # create a data frame of the smoothed data
+        self.smooth_data_df = pd.DataFrame(smooth_data, columns=['smooth_date','casecount-mv-avg','pos-test-mv-avg'])
+        # combine the smoothed data with the independent data frame
+        self.independent_df = pd.merge(self.independent_df, self.smooth_data_df, how="inner", left_on="casecountdate", right_on="smooth_date")
+        # drop the smooth date field from the combined data frame
+        self.independent_df = self.independent_df.drop(labels=['smooth_date'], axis=1)
+        # rename the date column of our independent data frame
+        self.independent_df.rename(columns = {"casecountdate" : "date"}, inplace=True)
 
 

@@ -26,17 +26,25 @@ class DbBuilder:
                 # create a table to house our the final data used to train our model for each prediction
                 cursor.execute('''CREATE TABLE IF NOT EXISTS model_data (row_id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                                         model_id INTEGER NOT NULL,
+                                                                        casecount_mv_avg REAL NOT NULL,
+                                                                        pos_test_mv_avg REAL NOT NULL,
+                                                                        icu_top16_hosp_total_util REAL NOT NULL
+                                                                        );''')
+                
+                # create a table to house our models
+                cursor.execute('''CREATE TABLE IF NOT EXISTS models (model_id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                                         model_date TEXT NOT NULL,
-                                                                        casecount_7day_mv_avg REAL NOT NULL,
-                                                                        pos_test_7day_mv_avg REAL NOT NULL,
-                                                                        icu_top16_hosp_total_util REAL NOT NULL);''')
+                                                                        model_score REAL NOT NULL,
+                                                                        model_poly_degree INTEGER NOT NULL,
+                                                                        model_mv_avg_days INTEGER NOT NULL
+                                                                        );''')
 
                 # create a table to house our icu utilization prediction
                 cursor.execute('''CREATE TABLE IF NOT EXISTS model_prediction (row_id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                                                 model_id INTEGER NOT NULL,
-                                                                                model_date TEXT NOT NULL,
                                                                                 icu_16_prediction REAL NOT NULL,
-                                                                                predict_date TEXT NOT NULL);''')
+                                                                                predict_date TEXT NOT NULL
+                                                                                );''')
                                                                                         
             
             finally:
