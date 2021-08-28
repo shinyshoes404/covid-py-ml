@@ -125,8 +125,8 @@ test-linux-py39:                                                      # name of 
   
   script: *script-linux                                               # run the scripted defined as an anchor above
   artifacts:
-  reports:
-    cobertura: coverage.xml
+    reports:
+      cobertura: coverage.xml
 
 # test job for python 3.8 running on linux
 test-linux-py38:                                                      # name of the job
