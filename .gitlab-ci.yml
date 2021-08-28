@@ -38,6 +38,7 @@ stages:
   - pip install wheel
   - pip install -e .[dev]
   - coverage run --source=src/covid_py_ml -m unittest discover -v -s src/tests
+  - coverage xml
   - coverage report -m | grep TOTAL
 
 # create reusable script for windows tests
@@ -123,7 +124,9 @@ test-linux-py39:                                                      # name of 
     - when: never                                                     # If not criteria were matched, do not run this job
   
   script: *script-linux                                               # run the scripted defined as an anchor above
-
+  artifacts:
+  reports:
+    cobertura: coverage.xml
 
 # test job for python 3.8 running on linux
 test-linux-py38:                                                      # name of the job
@@ -147,7 +150,9 @@ test-linux-py38:                                                      # name of 
     - when: never                                                     # If not criteria were matched, do not run this job
   
   script: *script-linux                                               # run the scripted defined as an anchor above
-
+  artifacts:
+    reports:
+      cobertura: coverage.xml
 
 # ------------------------- end jobs --------------------------- #
 
