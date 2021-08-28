@@ -7,9 +7,17 @@ class DbBuilder:
         self.db_exists = self.check_for_db()
 
     def check_for_db(self):
-        if os.path.exists(DbConfig.db_path):
-            return True
+        # look for db directory
+        if os.path.isdir(DbConfig.db_dir):
+            # look for db file
+            if os.path.exists(DbConfig.db_path):
+                return True
+            # if no db file return None
+            else:
+                return None
+        # if no db directory, make the directory and return none
         else:
+            os.mkdir(DbConfig.db_dir)
             return None
     
     def create_db(self):
