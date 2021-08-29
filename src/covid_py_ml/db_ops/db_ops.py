@@ -1,6 +1,4 @@
 import os, sqlite3
-from datetime import datetime
-
 from ml_config.ml_config import DbConfig, MlConfig
 
 class DbChecker:

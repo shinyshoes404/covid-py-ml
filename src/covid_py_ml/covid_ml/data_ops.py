@@ -3,8 +3,6 @@ from db_ops.db_ops import DbChecker
 import requests, pandas as pd, json, sqlite3
 from datetime import datetime, timedelta
 
-from requests.models import requote_uri
-
 
 class DataGetter:
     
