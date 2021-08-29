@@ -23,6 +23,9 @@ class MlConfig:
     # number of days for smoothing data using moving average
     mv_avg_days = 7
 
+    # number of days before data is stabilized and mature for use with predictions
+    data_days_to_mature = 6
+
 
 class DbConfig:
     # the db file will be located in covid-py-ml/data

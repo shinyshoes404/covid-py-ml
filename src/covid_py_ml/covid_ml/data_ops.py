@@ -190,7 +190,7 @@ class PredictionChecker:
     # max_predict is expected to be a date object with no time or None
     def get_prediction_data(self, max_predict_date, independent_df):
         # figure out what days you can predict
-        # only data from independent_df that is > 5 days old (from today) and < 19 days older than today
+        # only data from independent_df that is > 5 days old (from today) and < 19 days older than today (assuming that icu_date_offset is set to 19 in ml_config.MlConfig)
         # It takes 5 days for case count and test data collected to stabilize and mature, data needs to be at least 6 days old to use
         # Our model attempts to predict icu utilization 19 days from the independent variable data used to predict it. The farthest back we can go is 19 days
         # in order to predict today's (published tomorrow) icu utilization level
@@ -201,25 +201,39 @@ class PredictionChecker:
         # determine the lower bound that should be used when searching for eligible independent variable data by date
         # if no predictions have been made yet (None), then use today - 19 days as the lower bound for our independent variable data
         if max_predict_date == None:
-            self.low_bound_ind_data_date = self.today_date - timedelta(days=19)
+            self.low_bound_ind_data_date = self.today_date - timedelta(days=MlConfig.icu_date_offset)
         else:
             # otherwise, use the greater of today - 19 days and max prediction date - 19 days
-            if max_predict_date - timedelta(days=19) < self.today_date - timedelta(days=19):
-                self.low_bound_ind_data_date = self.today_date - timedelta(days=19)
+            if max_predict_date - timedelta(days=19) < self.today_date - timedelta(days=MlConfig.icu_date_offset):
+                self.low_bound_ind_data_date = self.today_date - timedelta(days=MlConfig.icu_date_offset)
             else:
-                self.low_bound_ind_data_date = max_predict_date - timedelta(days=19)
+                self.low_bound_ind_data_date = max_predict_date - timedelta(days=MlConfig.icu_date_offset)
         
-        # the upper bound for our independent variable data search by date will be today - 5 days
-        self.upper_bound_ind_data_date = self.today_date - timedelta(days=5)
+        # the upper bound for our independent variable data search by date will be today - 5 days (assuming data_days_to_mature is set to tha in MlConfig )
+        self.upper_bound_ind_data_date = self.today_date - timedelta(days=MlConfig.data_days_to_mature)
         
         # if the upper bound and lower bound are the same, then we already have the most current prediction, return None
         if self.low_bound_ind_data_date == self.upper_bound_ind_data_date:
             return None
 
-        # if not, find all of that data that can be used to make a prediction
-        prediction_data_df = independent_df[(independent_df['date'] > self.low_bound_ind_data_date) & (independent_df['date'] < self.upper_bound_ind_data_date) ]
-
-        print(prediction_data_df)
+        # if not, find all of the data that can be used to make a prediction
+        prediction_data_df = independent_df[(independent_df['date'] > self.low_bound_ind_data_date) & (independent_df['date'] < self.upper_bound_ind_data_date)]
+        
+        # this next section came about to deal with two inconsistent issues with Pandas. Something about truth value being ambiguous, and copying a slice.
+        # after filtering the data down to what I needed, I am just creating arrays from the filtered data, and building a new dataframe so I can calculate the predict-date
+        prediction_data_date = pd.Series(prediction_data_df['date']).tolist()
+        prediction_data_cascount = pd.Series(prediction_data_df['casecount-mv-avg']).tolist()
+        prediction_data_testrate = pd.Series(prediction_data_df['pos-test-mv-avg']).tolist()
+        prediction_data = {'date' : prediction_data_date,
+                            'casecount-mv-avg': prediction_data_cascount,
+                            'pos-test-mv-avg' : prediction_data_testrate        
+                            }
+        
+        final_pred_df = pd.DataFrame(prediction_data, columns=['date','casecount-mv-avg','pos-test-mv-avg'])
+        final_pred_df['predict-date'] = final_pred_df['date'] + pd.to_timedelta(MlConfig.icu_date_offset,unit='d')
+       
+        return final_pred_df
+        
         
 
 

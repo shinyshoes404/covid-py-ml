@@ -7,16 +7,16 @@ class DataModeler:
     def __init__(self):
         self.poly_degree = MlConfig.poly_degree
     
-    def model_train(self,X,y):
+    def model_train(self,x,y):
 
         # if we have a polynomial degree greater than 1, transform X before fitting the model
         if self.poly_degree > 1:
             poly = PolynomialFeatures(degree=self.poly_degree)
-            x_train = poly.fit_transform(X)
+            x_train = poly.fit_transform(x)
         
         # otherwise, we are just doing multiple linear regression, no transform necessary
         else:
-            x_train = X
+            x_train = x
 
         # instantiate our linear regression model
         self.model = LinearRegression()
@@ -24,4 +24,12 @@ class DataModeler:
         self.model_score = self.model.score(x_train, y)
 
     
-        
+    def predict(self, predict_x):
+        if self.poly_degree > 1:
+            poly = PolynomialFeatures(degree=self.poly_degree)
+            x_predict = poly.fit_transform(predict_x)
+        else:
+            x_predict = predict_x
+
+        print(x_predict)
+        return self.model.predict(x_predict)

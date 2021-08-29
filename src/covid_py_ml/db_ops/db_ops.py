@@ -70,3 +70,12 @@ class DbBuilder:
                     connection.close()
 
 
+class ModelDataAdder:
+    def __init__(self, model_date, model_score, model_x, model_y, icu_predictions):
+        self.model_date = model_date
+        self.model_score = model_score
+        self.model_x = model_x
+        self.model_y = model_y
+        self.icu_predictions = icu_predictions
+
+    
