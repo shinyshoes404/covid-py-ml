@@ -179,7 +179,7 @@ class PredictionChecker:
                 cursor.close()
             if conn:
                 conn.close()
-        print(max_predict_date)
+        
         # if we don't have any predictions, return None
         if max_predict_date == (None,):
             return None

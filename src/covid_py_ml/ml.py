@@ -1,5 +1,6 @@
 from covid_ml.data_ops import DataGetter, PredictionChecker
 import sys, pandas as pd
+from db_ops.db_ops import ModelDataAdder
 from covid_ml.modeling import DataModeler
 
 from ml_config.ml_config import MlConfig
@@ -57,9 +58,14 @@ data_modeler.model_train(x,y)
 
 y_predict = data_modeler.predict(predict_data_df[['casecount-mv-avg','pos-test-mv-avg']])
 
+# create an object to add the model information to the database
+data_adder = ModelDataAdder(model_date=prediction_checker.today_date,
+                            model_score=data_modeler.model_score,
+                            model_x_data=x,
+                            model_y_data=y,
+                            icu_predictions=y_predict)
 
-
-
+data_adder.add_model()
 
 
 

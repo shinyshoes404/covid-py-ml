@@ -31,5 +31,5 @@ class DataModeler:
         else:
             x_predict = predict_x
 
-        print(x_predict)
+        
         return self.model.predict(x_predict)

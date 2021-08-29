@@ -1,6 +1,7 @@
 import os, sqlite3
+from sqlite3.dbapi2 import connect
 
-from ml_config.ml_config import DbConfig
+from ml_config.ml_config import DbConfig, MlConfig
 
 class DbChecker:
     def __init__(self):
@@ -71,11 +72,30 @@ class DbBuilder:
 
 
 class ModelDataAdder:
-    def __init__(self, model_date, model_score, model_x, model_y, icu_predictions):
+    def __init__(self, model_date, model_score, model_x_data, model_y_data, icu_predictions):
         self.model_date = model_date
         self.model_score = model_score
-        self.model_x = model_x
-        self.model_y = model_y
+        self.model_x_data = model_x_data
+        self.model_y_ydata = model_y_data
         self.icu_predictions = icu_predictions
 
-    
+    def add_model(self):
+        sql_str = "INSERT INTO models (model_date, model_score, model_poly_degree, model_mv_avg_days) VALUES(:model_date, :model_score, :model_poly_degree, :model_mv_avg_days)"
+        sql_dict = {"model_date" : self.model_date, "model_score" : self.model_score, "model_poly_degree" : MlConfig.poly_degree, "model_mv_avg_days" : MlConfig.mv_avg_days}
+        
+        connection = sqlite3.connect(DbConfig.db_path)
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute(sql_str, sql_dict)
+            connection.commit()
+            self.model_id = cursor.lastrowid
+        
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
+            
+
