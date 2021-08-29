@@ -2,10 +2,10 @@ import os, sqlite3
 
 from ml_config.ml_config import DbConfig
 
-class DbBuilder:
+class DbChecker:
     def __init__(self):
         self.db_exists = self.check_for_db()
-
+    
     def check_for_db(self):
         # look for db directory
         if os.path.isdir(DbConfig.db_dir):
@@ -19,6 +19,12 @@ class DbBuilder:
         else:
             os.mkdir(DbConfig.db_dir)
             return None
+
+class DbBuilder:
+    def __init__(self):
+        db_checker = DbChecker()
+        self.db_exists = db_checker.db_exists
+    
     
     def create_db(self):
         # if the database file does not exist, build out the database
@@ -53,8 +59,9 @@ class DbBuilder:
                                                                                 icu_16_prediction REAL NOT NULL,
                                                                                 predict_date TEXT NOT NULL
                                                                                 );''')
-                                                                                        
-            
+                # commit our changes                                                                                        
+                connection.commit()
+                
             finally:
                 # make sure the cursor and connection get closed
                 if cursor:
@@ -63,10 +70,3 @@ class DbBuilder:
                     connection.close()
 
 
-def build_db():
-    db_builder = DbBuilder()
-    db_builder.create_db()
-
-
-if __name__ == "__main__":
-    build_db()

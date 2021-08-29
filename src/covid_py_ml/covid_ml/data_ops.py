@@ -1,5 +1,9 @@
-from ml_config.ml_config import MlConfig
-import requests, pandas as pd, json
+from ml_config.ml_config import DbConfig, MlConfig
+from db_ops.db_ops import DbChecker
+import requests, pandas as pd, json, sqlite3
+from datetime import datetime, timedelta
+
+from requests.models import requote_uri
 
 
 class DataGetter:
@@ -150,5 +154,80 @@ class DataGetter:
         self.independent_df = self.independent_df.drop(labels=['smooth_date'], axis=1)
         # rename the date column of our independent data frame
         self.independent_df.rename(columns = {"casecountdate" : "date"}, inplace=True)
+
+
+class PredictionChecker:
+    def __init__(self):
+        # verify that the database exists
+        db_checker = DbChecker()
+        self.check_db = db_checker.db_exists
+
+    def get_max_prediction_date(self):
+        # Does a database file exist?
+        if self.check_db == None:
+            # if not, return False and stop looking for a prediction date
+            return False
+
+        # get the max prediction date that we have so far from the database
+        conn = sqlite3.connect(DbConfig.db_path)
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT MAX(predict_date) as furthest_predict FROM model_prediction;")
+            max_predict_date = cursor.fetchone()
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+        print(max_predict_date)
+        # if we don't have any predictions, return None
+        if max_predict_date == (None,):
+            return None
+        else:
+            # return the max date as date object with date and time (at midnight)
+            return datetime.strptime(max_predict_date[0], "%Y-%m-%d")
+    
+    # max_predict is expected to be a date object with no time or None
+    def get_prediction_data(self, max_predict_date, independent_df):
+        # figure out what days you can predict
+        # only data from independent_df that is > 5 days old (from today) and < 19 days older than today
+        # It takes 5 days for case count and test data collected to stabilize and mature, data needs to be at least 6 days old to use
+        # Our model attempts to predict icu utilization 19 days from the independent variable data used to predict it. The farthest back we can go is 19 days
+        # in order to predict today's (published tomorrow) icu utilization level
+
+        # get today's date (based on this machine's timezone), keeping datetime format, but trimming off hours, min, sec, milisec for easier date math and comparison
+        self.today_date = datetime.strptime(datetime.today().date().strftime("%Y-%m-%d"),"%Y-%m-%d")
+
+        # determine the lower bound that should be used when searching for eligible independent variable data by date
+        # if no predictions have been made yet (None), then use today - 19 days as the lower bound for our independent variable data
+        if max_predict_date == None:
+            self.low_bound_ind_data_date = self.today_date - timedelta(days=19)
+        else:
+            # otherwise, use the greater of today - 19 days and max prediction date - 19 days
+            if max_predict_date - timedelta(days=19) < self.today_date - timedelta(days=19):
+                self.low_bound_ind_data_date = self.today_date - timedelta(days=19)
+            else:
+                self.low_bound_ind_data_date = max_predict_date - timedelta(days=19)
+        
+        # the upper bound for our independent variable data search by date will be today - 5 days
+        self.upper_bound_ind_data_date = self.today_date - timedelta(days=5)
+        
+        # if the upper bound and lower bound are the same, then we already have the most current prediction, return None
+        if self.low_bound_ind_data_date == self.upper_bound_ind_data_date:
+            return None
+
+        # if not, find all of that data that can be used to make a prediction
+        prediction_data_df = independent_df[(independent_df['date'] > self.low_bound_ind_data_date) & (independent_df['date'] < self.upper_bound_ind_data_date) ]
+
+        print(prediction_data_df)
+        
+
+
+
+     
+
+
+
+
 
 
