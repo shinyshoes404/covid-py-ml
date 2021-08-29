@@ -9,7 +9,7 @@ class DataGetter:
     def __init__(self):
         pass
     
-    # method to get data from api
+    # method to get data from api  
     def get_api_data(self, url):
         # try a get request from the api
         try:
