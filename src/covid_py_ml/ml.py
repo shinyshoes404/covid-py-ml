@@ -11,17 +11,17 @@ data_getter = DataGetter()
 check_casecount = data_getter.get_casecount_data()
 # if there is a problem, exit the application
 if check_casecount == None:
-    sys.exit("Error: Problem getting case count data")
+    sys.exit("Exit: Error -- Problem getting case count data")
 
 check_testing = data_getter.get_testing_data()
 # if there is a problem, exit the applicaation
 if check_testing == None:
-    sys.exit("Error: Problem getting testing data")
+    sys.exit("Exit: Error -- Problem getting testing data")
 
 check_icu_16 = data_getter.get_icu_16_data()
 # if there is a problem, exit the application
 if check_icu_16 == None:
-    sys.exit("Error: Problem getting icu top 16 data")
+    sys.exit("Exit: Error -- Problem getting icu top 16 data")
 
 # combine and transform the data we just fetched to get two data frames. One to use for building our regression model, and one with the independent variable data we need for predictions
 data_getter.combine_model_df()
@@ -32,7 +32,7 @@ prediction_checker = PredictionChecker()
 max_predict_date = prediction_checker.get_max_prediction_date()
 # a value of False being returned by get_max_prediction_date() means that our database does not exist yet.
 if max_predict_date == False:
-    sys.exit("Error: Your database was not setup correctly. Use db_setup.py to create the database before running ml.py")
+    sys.exit("Exit: Error -- Your database was not setup correctly. Use db_setup.py to create the database before running ml.py")
 
 # determine the available independent data that we can use to make predictions, keeping in mind that we don't want to
 # repeat prediction dates, data must be > 5 days old to be used for a prediction, and we cannot make a prediction more than 19 days into the future
@@ -41,7 +41,7 @@ predict_data_df = prediction_checker.get_prediction_data(max_predict_date, data_
 # if prediction_data is None, then no data was found that is eligible to use for a prediction
 # otherwise, we should have a pandas data frame to work with
 if predict_data_df is None:
-    sys.exit("No predictions to be made.")
+    sys.exit("Exit: No predictions to be made.")
 
 
 ### -------------- BUILD THE MODEL ------------------ ###
@@ -58,16 +58,17 @@ data_modeler.model_train(x,y)
 
 y_predict = data_modeler.predict(predict_data_df[['casecount-mv-avg','pos-test-mv-avg']])
 
+
+### ------------------- ADD THE DATA TO THE DATABASE --------------------- ###
 # create an object to add the model information to the database
 data_adder = ModelDataAdder(model_date=prediction_checker.today_date,
                             model_score=data_modeler.model_score,
-                            model_x_data=x,
-                            model_y_data=y,
-                            icu_predictions=y_predict)
+                            model_data=data_getter.model_data_df[['date','casecount-mv-avg','pos-test-mv-avg', 'icu-top16-hosp-total-util']],
+                            icu_predictions=y_predict,
+                            icu_prediction_dates=predict_data_df['predict-date'])
 
-data_adder.add_model()
-
-
+# insert the data to the database
+data_adder.add_data()
 
 
 

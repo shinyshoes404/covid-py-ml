@@ -185,12 +185,12 @@ class PredictionChecker:
             return None
         else:
             # return the max date as date object with date and time (at midnight)
-            return datetime.strptime(max_predict_date[0], "%Y-%m-%d")
+            return datetime.strptime(max_predict_date[0], "%Y-%m-%d %H:%M:%S")
     
     # max_predict is expected to be a date object with no time or None
     def get_prediction_data(self, max_predict_date, independent_df):
         # figure out what days you can predict
-        # only data from independent_df that is > 5 days old (from today) and < 19 days older than today (assuming that icu_date_offset is set to 19 in ml_config.MlConfig)
+        # only data from independent_df that is > 4 days old (from today) and < 19 days older than today (assuming that icu_date_offset is set to 19 in ml_config.MlConfig)
         # It takes 5 days for case count and test data collected to stabilize and mature, data needs to be at least 6 days old to use
         # Our model attempts to predict icu utilization 19 days from the independent variable data used to predict it. The farthest back we can go is 19 days
         # in order to predict today's (published tomorrow) icu utilization level
@@ -209,11 +209,11 @@ class PredictionChecker:
             else:
                 self.low_bound_ind_data_date = max_predict_date - timedelta(days=MlConfig.icu_date_offset)
         
-        # the upper bound for our independent variable data search by date will be today - 5 days (assuming data_days_to_mature is set to tha in MlConfig )
+        # the upper bound for our independent variable data search by date will be today - 4 days (assuming data_days_to_mature is set to that in MlConfig )
         self.upper_bound_ind_data_date = self.today_date - timedelta(days=MlConfig.data_days_to_mature)
         
-        # if the upper bound and lower bound are the same, then we already have the most current prediction, return None
-        if self.low_bound_ind_data_date == self.upper_bound_ind_data_date:
+        # if the upper bound and lower bound are only one day apart, then we already have the most current prediction, return None
+        if self.low_bound_ind_data_date == self.upper_bound_ind_data_date - pd.to_timedelta(1, unit='d'):
             return None
 
         # if not, find all of the data that can be used to make a prediction

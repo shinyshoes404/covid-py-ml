@@ -24,7 +24,7 @@ class MlConfig:
     mv_avg_days = 7
 
     # number of days before data is stabilized and mature for use with predictions
-    data_days_to_mature = 6
+    data_days_to_mature = 4
 
 
 class DbConfig:
