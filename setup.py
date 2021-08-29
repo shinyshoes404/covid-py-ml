@@ -16,7 +16,7 @@ setup(
     packages=['covid_ml','ml_config','db_ops'],
     package_dir={'':'src/covid_py_ml'},
     install_requires=[
-        'requests','pandas', 'scikit-learn'
+        'requests', 'pandas', 'scikit-learn', 'flask', 'flask_cors'
     ],
 
     extras_require={

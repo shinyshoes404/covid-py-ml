@@ -1,4 +1,5 @@
 import os, sqlite3
+from sqlite3.dbapi2 import connect
 from ml_config.ml_config import DbConfig, MlConfig
 
 class DbChecker:
@@ -148,3 +149,110 @@ class ModelDataAdder:
                 cursor.close()
             if connection:
                 connection.close()
+
+
+class ModelDataGetter:
+    def __init__(self):
+        db_checker = DbChecker()
+        self.db_exists = db_checker.check_for_db()
+    
+    def get_models(self):
+        connection = sqlite3.connect(DbConfig.db_path)
+        cursor = connection.cursor()
+
+        sql_str = "SELECT * FROM models;"
+
+        try:
+            cursor.execute(sql_str)
+            results = cursor.fetchall()
+        
+        except:
+            # if we run into an exception, return False
+            return False
+
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+        
+        if results == [(None,)] or results == []:
+            # no data was retrieved from the database, return None
+            return None
+        
+        # create an empty payload
+        response_payload = { "models" : []}
+        # build out the payload to send
+        for rows in results:
+            temp_dict = {"model_id" : rows[0], "model_date" : rows[1], "model_score" : rows[2], "model_poly_degree" : rows[3], "model_mv_avg_days" : rows[4]}
+            response_payload['models'].append(temp_dict)
+        
+        return response_payload
+
+    def get_predictions(self):
+        connection = sqlite3.connect(DbConfig.db_path)
+        cursor = connection.cursor()
+
+        sql_str = "SELECT model_id, icu_16_prediction, predict_date FROM model_prediction;"
+
+        try:
+            cursor.execute(sql_str)
+            results = cursor.fetchall()
+        
+        except:
+            # if we run into an exception, return False
+            return False
+
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+        
+        if results == [(None,)] or results == []:
+            # no data was retrieved from the database, return None
+            return None
+        
+        # create an empty payload
+        response_payload = { "predictions" : []}
+        # build out the payload to send
+        for rows in results:
+            temp_dict = {"model_id" : rows[0], "icu_16_prediction" : rows[1], "predict_date" : rows[2]}
+            response_payload['predictions'].append(temp_dict)
+        
+        return response_payload
+
+
+    def get_model_data(self, model_id):
+        connection = sqlite3.connect(DbConfig.db_path)
+        cursor = connection.cursor()
+
+        sql_str = "SELECT observation_date, model_id, casecount_mv_avg, pos_test_mv_avg, icu_top16_hosp_total_util FROM model_data WHERE model_id = :model_id;"
+
+        try:
+            cursor.execute(sql_str, {"model_id" : model_id})
+            results = cursor.fetchall()
+        
+        except:
+            # if we run into an exception, return False
+            return False
+
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+        
+        if results == [(None,)] or results == []:
+            # no data was retrieved from the database, return None
+            return None
+        
+        # create an empty payload
+        response_payload = { "model_data" : []}
+        # build out the payload to send
+        for rows in results:
+            temp_dict = {"observation_date" : rows[0], "model_id" : rows[1], "casecount_mv_avg" : rows[2], "pos_test_mv_avg" : rows[3], "icu_top16_total_util" : rows[4]}
+            response_payload['model_data'].append(temp_dict)
+        
+        return response_payload
+        

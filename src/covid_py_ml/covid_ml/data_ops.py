@@ -179,7 +179,7 @@ class PredictionChecker:
                 conn.close()
         
         # if we don't have any predictions, return None
-        if max_predict_date == (None,):
+        if max_predict_date == (None,) or max_predict_date == []:
             return None
         else:
             # return the max date as date object with date and time (at midnight)
