@@ -1,0 +1,16 @@
+version: '3.0'
+
+services:
+ covid-ml:
+  image: git.swilsycloud.com:5050/covid_tracker/apps/covid-py-ml:v0.1.0
+  tty: true
+  stdin_open: true
+  volumes:
+   - db:/home/covidml/python_apps/apps/data
+   - logs:/home/covidml/covid_py_ml_logs
+  ports:
+   - "0.0.0.0:8080:8080"
+
+volumes:
+ db:
+ logs:

@@ -2,7 +2,6 @@ certifi==2021.5.30
 charset-normalizer==2.0.4
 click==8.0.1
 colorama==0.4.4
-covid-py-ml @ file:///C:/Users/swilsy/Documents/Dev/covid_tracker/covid-py-ml
 Flask==2.0.1
 Flask-Cors==3.0.10
 idna==3.2

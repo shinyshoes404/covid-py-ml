@@ -24,9 +24,9 @@ ENV PY_VIRTUAL_DIR=${PY_ROOT_DIR}/virtual_envs
 # set the name of the virtual environment
 ENV VIRTUAL_ENV=${PY_VIRTUAL_DIR}/venv_ml
 # set database directory
-ENV DB_DIR = ${PY_APP_DIR}/data
+ENV DB_DIR=${PY_APP_DIR}/data
 # set log directory
-ENV LOG_DIR = /home/${USERNAME}/covid_py_ml_logs
+ENV LOG_DIR=/home/${USERNAME}/covid_py_ml_logs
 # set the timezone info
 ENV TZ=America/Chicago
 
@@ -76,33 +76,31 @@ RUN mkdir -p "$PY_VIRTUAL_DIR" && \
     . "$VIRTUAL_ENV/bin/activate" && \
     pip install gunicorn
 
+
+COPY requirements.txt ${PY_APP_DIR}/
+
+# move into the root of the project directory
+# activate the virtual environment
+# install the required dependencies
+RUN cd ${PY_APP_DIR} && \
+    . ${VIRTUAL_ENV}/bin/activate && \
+    pip install -r requirements.txt && \
+    rm requirements.txt
+
 # copy the covid_py app into the container
 COPY src/covid_py_ml ${PY_APP_DIR}/covid_py_ml
 COPY run_db_setup.sh /home/${USERNAME}/
 COPY run_ml.sh /home/${USERNAME}/
 COPY run_api.sh /home/${USERNAME}/
-COPY requirements.txt ${PY_APP_DIR}/covid_py_ml/
-
-# move into the root of the project directory
-# activate the virtual environment
-# install the required dependencies
-RUN cd ${PY_APP_DIR}/covid_py_ml && \
-    . ${VIRTUAL_ENV}/bin/activate && \
-    pip install -r requirements.txt && \
-    rm requirements.txt
-
 
 #### --- WHAT TO DO WHEN THE CONTAINER STARTS --- ####
 
 #  change ownership recursively of USERNAME home directory to make sure USERNAME has privileges to files copied into image
-#  change ownership recursively of python application directory to that USERNAME has previleges to fiels copied into image
+#  change ownership recursively of python application directory to that USERNAME has privileges to fiels copied into image
 #  start the bash script to run python app
-#  start bash
 ENTRYPOINT chown -R ${USERNAME}:${USERNAME} /home/${USERNAME} && \
     chown -R ${USERNAME}:${USERNAME} ${PY_ROOT_DIR} && \
     su ${USERNAME} -c "/bin/bash /home/${USERNAME}/run_db_setup.sh" && \
-    sleep 1 && \
-    su ${USERNAME} -c "/bin/bash /home/${USERNAME}/run_ml.sh" && \
-    sleep 15 && \
     su ${USERNAME} -c "/bin/bash /home/${USERNAME}/run_api.sh" && \
-    bash
+    su ${USERNAME} -c "/bin/bash /home/${USERNAME}/run_ml.sh"
+    
