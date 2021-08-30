@@ -19,7 +19,7 @@ do
         printf "\n"
 
 
-	# determine how many seconds to sleep so that the next routine runs at the top of the hour every four hours
+	# determine how many seconds to sleep so that the next routine runs at 15 min past the hour every four hours
 
 	# current epoch in seconds
 	now_seconds=$(date +'%s')
@@ -27,10 +27,10 @@ do
 	# determine target date and time with hour, but no minutes
 	target_date_hour=$(date -d "now + 4 hour" +'%m/%d/%Y %H')
 
-	# determine the epoch in seconds for the top of the next hour
-	target_seconds=$(date -d "$target_date_hour:00" +'%s')
+	# determine the epoch in seconds for the next target time
+	target_seconds=$(date -d "$target_date_hour:15" +'%s')
 
-	# calculate the number of seconds between now the top of the next hour
+	# calculate the number of seconds between now the target time
 	sleep_seconds=$(( $target_seconds - $now_seconds ))
 
 	echo "sleeping for $sleep_seconds"

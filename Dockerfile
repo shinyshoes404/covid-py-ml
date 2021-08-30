@@ -37,6 +37,7 @@ ENV TZ=America/Chicago
 # then upgrade the base packages
 # set timezone
 # Set the locale
+# install tzdata package (to make timezone work)
 # install nano
 # disable root user
 # create our default user
@@ -47,6 +48,7 @@ RUN  apt-get update && \
     apt-get install locales -y && \
     sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     locale-gen && \
+    apt-get install tzdata -y && \
     apt-get install nano -y && \
     passwd -l root &&\
     $(useradd -s /bin/bash -m ${USERNAME})
