@@ -77,11 +77,19 @@ RUN mkdir -p "$PY_VIRTUAL_DIR" && \
     pip install gunicorn
 
 # copy the covid_py app into the container
-COPY src/covid_py_ml "$PY_APP_DIR/covid_py_ml
+COPY src/covid_py_ml ${PY_APP_DIR}/covid_py_ml
 COPY run_db_setup.sh /home/${USERNAME}/
 COPY run_ml.sh /home/${USERNAME}/
 COPY run_api.sh /home/${USERNAME}/
+COPY requirements.txt ${PY_APP_DIR}/covid_py_ml/
 
+# move into the root of the project directory
+# activate the virtual environment
+# install the required dependencies
+RUN cd ${PY_APP_DIR}/covid_py_ml && \
+    . ${VIRTUAL_ENV}/bin/activate && \
+    pip install -r requirements.txt && \
+    rm requirements.txt
 
 
 #### --- WHAT TO DO WHEN THE CONTAINER STARTS --- ####
