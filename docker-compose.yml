@@ -2,7 +2,7 @@ version: '3.0'
 
 services:
  covid-ml:
-  image: git.swilsycloud.com:5050/covid_tracker/apps/covid-py-ml:v0.1.0
+  image: covid-py-ml:v0.1.2
   tty: true
   stdin_open: true
   volumes:
