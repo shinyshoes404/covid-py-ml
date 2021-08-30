@@ -13,8 +13,10 @@ setup(
     author='shinyshoes',
     author_email='shinyshoes404@protonmail.com',
     license='MIT License',
+    packages=['covid_ml','ml_config','db_ops'],
+    package_dir={'':'src/covid_py_ml'},
     install_requires=[
-        'requests', 'pandas', 'scikit-learn', 'flask', 'flask_cors'
+        'requests', 'pandas', 'scikit-learn', 'flask', 'flask-cors'
     ],
 
     extras_require={
