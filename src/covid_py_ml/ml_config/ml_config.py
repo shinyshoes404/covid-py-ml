@@ -31,9 +31,9 @@ class DbConfig:
     # the db file will be located in covid-py-ml/data
     # if the system we are running on is Windows, use back slashes
     if platform.system() == "Windows":
-        db_dir = os.path.join(CONFIG_DIR, "..\..\..\data")
+        db_dir = os.path.join(CONFIG_DIR, "..\..\data")
         db_path = os.path.join(db_dir, ".\covid_ml.db")
     # otherwise use forward slashes
     else:
-        db_dir = os.path.join(CONFIG_DIR,"../../../data")
-        db_path = os.path.join(CONFIG_DIR, "./covid_ml.db")
+        db_dir = os.path.join(CONFIG_DIR,"../../data")
+        db_path = os.path.join(db_dir, "./covid_ml.db")
