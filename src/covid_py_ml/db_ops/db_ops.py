@@ -1,5 +1,4 @@
 import os, sqlite3
-from sqlite3.dbapi2 import connect
 from ml_config.ml_config import DbConfig, MlConfig
 
 class DbChecker:
