@@ -37,7 +37,7 @@ stages:
   - pip install -r requirements.txt
   - pip install mock
   - pip install coverage
-  - coverage run --source=src/covid_py_ml -m unittest discover -v -s src/tests
+  - coverage run --source=src/covid_py_ml --omit=src/covid_py_ml/tests -m unittest discover -v -s src/covid_py_ml/tests
   - coverage xml
   - coverage report -m | grep TOTAL
 
@@ -48,7 +48,7 @@ stages:
   - pip install -r requirements.txt
   - pip install coverage
   - pip install mock
-  - coverage run --source=src/covid_py_ml -m unittest discover -v -s src/tests
+  - coverage run --source=src/covid_py_ml --omit=src/covid_py_ml/tests -m unittest discover -v -s src/covid_py_ml/tests
   - coverage xml
   - coverage report -m | Select-String "TOTAL"
 
