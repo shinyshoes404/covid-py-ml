@@ -2,7 +2,7 @@
 ### NOTE: The comment line above is critical. It allows for the user of Docker Buildkit to inject secrets in the image at build time ###
 # to build docker image
 # $ export DOCKER_BUILDKIT=1
-# $ docker build -t covid-py-ml:v0.1.3  .
+# $ docker build -t git.swilsycloud.com:5050/covid_tracker/apps/covid-py-ml:v0.1.x  .
 
 # use the base ubuntu image to start
 FROM ubuntu:20.04
@@ -34,11 +34,11 @@ ENV TZ=America/Chicago
 #### ---- BASIC SYSTEM SETUP ---- ####
 
 # check for updates 
-# upgrade the base packages
+# then upgrade the base packages
 # set timezone
 # Set the locale
 # install tzdata package (to make timezone work)
-# install nano (helpful for troubleshooting from a docker exec command)
+# install nano
 # disable root user
 # create our default user
 RUN  apt-get update && \
@@ -53,7 +53,7 @@ RUN  apt-get update && \
     passwd -l root &&\
     $(useradd -s /bin/bash -m ${USERNAME})
 
-# setting local ENV variables in case any apps that get installed later can use them
+# setting local ENV variables
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
@@ -69,48 +69,37 @@ ENV LC_ALL en_US.UTF-8
 # create virtual environment 
 # activate virtual environment
 # use pip to install gunicorn (for api)
-RUN mkdir -p ${PY_VIRTUAL_DIR} && \
-    mkdir ${PY_APP_DIR} && \
+RUN mkdir -p "$PY_VIRTUAL_DIR" && \
+    mkdir "$PY_APP_DIR" && \
     mkdir ${DB_DIR} && \
     apt-get install python3-pip -y && \
     apt-get install python3-virtualenv -y && \
-    virtualenv -p python3.8 ${VIRTUAL_ENV} && \
-    . ${VIRTUAL_ENV}/bin/activate && \
+    virtualenv -p python3.8 "$VIRTUAL_ENV" && \
+    . "$VIRTUAL_ENV/bin/activate" && \
     pip install gunicorn
 
 
 COPY requirements.txt ${PY_APP_DIR}/
 
-# move into the root of the python apps directory
+# move into the root of the project directory
 # activate the virtual environment
 # install the required dependencies
-# remove the requirements file
 RUN cd ${PY_APP_DIR} && \
     . ${VIRTUAL_ENV}/bin/activate && \
     pip install -r requirements.txt && \
     rm requirements.txt
 
-    
-
-#### ---- RUN TIME SCRIPTS ---- ####
-# copy the covid_py_ml app into the image
-# copy the script to run the db setup
-# copy the script to run the machine learning module
-# copy the script to start the api
+# copy the covid_py app into the container
 COPY src/covid_py_ml ${PY_APP_DIR}/covid_py_ml
 COPY run_db_setup.sh /home/${USERNAME}/
 COPY run_ml.sh /home/${USERNAME}/
 COPY run_api.sh /home/${USERNAME}/
 
-
-
 #### --- WHAT TO DO WHEN THE CONTAINER STARTS --- ####
 
 #  change ownership recursively of USERNAME home directory to make sure USERNAME has privileges to files copied into image
 #  change ownership recursively of python application directory to that USERNAME has privileges to fiels copied into image
-#  start the bash script to setup the database
-#  start the bash script to start the api
-#  start the bash script to run the machine learning module
+#  start the bash script to run python app
 ENTRYPOINT chown -R ${USERNAME}:${USERNAME} /home/${USERNAME} && \
     chown -R ${USERNAME}:${USERNAME} ${PY_ROOT_DIR} && \
     su ${USERNAME} -c "/bin/bash /home/${USERNAME}/run_db_setup.sh" && \

@@ -13,9 +13,10 @@ stages:
 
 # define changes anchor
 .changes: &changes
+  - setup.py
   - src/**/*
   - .gitlab-ci.yml
-  - requirements.txt
+  - pyproject.toml
 
 ### ----------------------- END OF LIST OF FILES WE CARE ABOUT CHANGES ON --------------------- ###
 
@@ -34,9 +35,8 @@ stages:
   - python -m venv venv
   - source venv/bin/activate
   - python -m pip install --upgrade pip
-  - pip install -r requirements.txt
-  - pip install mock
-  - pip install coverage
+  - pip install wheel
+  - pip install -e .[dev]
   - coverage run --source=src/covid_py_ml -m unittest discover -v -s src/tests
   - coverage xml
   - coverage report -m | grep TOTAL
@@ -45,9 +45,7 @@ stages:
 .script-win: &script-win
   - echo "this is testing"
   - echo "python version"; python --version
-  - pip install -r requirements.txt
-  - pip install coverage
-  - pip install mock
+  - pip install -e .[dev]
   - coverage run --source=src/covid_py_ml -m unittest discover -v -s src/tests
   - coverage xml
   - coverage report -m | Select-String "TOTAL"
