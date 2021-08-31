@@ -5,6 +5,7 @@ services:
   image: covid-py-ml:latest
   tty: true
   stdin_open: true
+  # The directoris that we are mapping the volumes to are set in the dockerfile
   volumes:
    - db:/home/covidml/python_apps/apps/data
    - logs:/home/covidml/covid_py_ml_logs
