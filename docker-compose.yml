@@ -2,7 +2,7 @@ version: '3.0'
 
 services:
  covid-ml:
-  image: covid-py-ml:latest
+  image: covid-py-ml:latest 
   tty: true
   stdin_open: true
   volumes:
