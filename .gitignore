@@ -9,4 +9,3 @@ build/
 data/
 sqlite3.exe
 htmlcov/
-create_dfs.py
