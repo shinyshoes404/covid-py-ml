@@ -1,8 +1,16 @@
 import unittest, mock, pandas as pd, json, requests
-from test_data import test_case_json, test_casecount_df, test_testdata_json, test_testing_df, test_icu_16_json, test_icu_df, test_casecount_built_df
+from test_data import test_case_json, test_casecount_df, test_testdata_json, test_testing_df, test_icu_16_json, test_icu_df
+from test_data import test_casecasecount_fulltest_json, test_casecount_fulltest_df, test_testing_fulltest_json, test_testing_fulltest_df
+from test_data import test_icu_16_fulltest_json, test_icu_16_fulltest_df, test_independent_df, test_model_data_df
 
 # import the DataGetter class for testing
 from covid_ml.data_ops import DataGetter
+
+# make sure that any warnings trigger exceptions
+# this was specifically put in place to make sure that strings in pandas dataframes
+# are not inferred to be datetime when using the df1.equals(df2) approach to comparing dataframes
+import warnings
+warnings.filterwarnings('error')
 
 
 # testing the get_api_data() method
@@ -89,6 +97,40 @@ class TestDataGetterGetCasecountData(unittest.TestCase):
         validation_object = DataGetter()
         check_validation = validation_object.get_casecount_data()
         self.assertEqual(check_validation, None, "DataGetter.get_casecount_data: Expecting None")
+    
+    # integration test - does the input json match the expected output dataframe
+    def test_integ_json_to_df_equal(self):
+        # mock the requests.get() method to return a status code of 200 and test_case_json
+        with mock.patch('covid_ml.data_ops.requests.get') as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.json.return_value = test_casecasecount_fulltest_json
+            validation_obj = DataGetter()
+            validation_obj.get_casecount_data()
+        
+        check_validation = validation_obj.casecount_df.equals(test_casecount_fulltest_df)
+        self.assertEqual(check_validation, True, "DataGetter.get_casecount_data: expecting True")
+
+    # integration test - does get_casecount_data() return True indicating success
+    def test_integ_json_to_df_true(self):
+        # mock the requests.get() method to return a status code of 200 and test_case_json
+        with mock.patch('covid_ml.data_ops.requests.get') as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.json.return_value = test_casecasecount_fulltest_json
+            validation_obj = DataGetter()
+            check_validation = validation_obj.get_casecount_data()
+        
+        self.assertEqual(check_validation, True, "DataGetter.get_casecount_data: expecting True")
+    
+    # integration test - does get_casecount_data() return none indicating something went wrong
+    def test_integ_json_to_df_none(self):
+        # mock the requests.get() method to return a status code of 404
+        with mock.patch('covid_ml.data_ops.requests.get') as mock_get:
+            mock_get.return_value.status_code = 404
+            mock_get.return_value.json.return_value = test_casecasecount_fulltest_json
+            validation_obj = DataGetter()
+            check_validation = validation_obj.get_casecount_data()
+        
+        self.assertEqual(check_validation, None, "DataGetter.get_casecount_data: expecting True")
 
 # testing the get_testing_data() method
 class TestDataGetterGetTestingData(unittest.TestCase):
@@ -116,7 +158,39 @@ class TestDataGetterGetTestingData(unittest.TestCase):
         check_validation = validation_object.get_testing_data()
         self.assertEqual(check_validation, None, "DataGetter.get_testing_data: Expecting None")
 
+    # integration test - does the input json match the expected output dataframe
+    def test_integ_json_to_df_equal(self):
+        # mock the requests.get() method to return a status code of 200 and test_testing_fulltest_json
+        with mock.patch('covid_ml.data_ops.requests.get') as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.json.return_value = test_testing_fulltest_json
+            validation_obj = DataGetter()
+            validation_obj.get_testing_data()
+        
+        check_validation = validation_obj.testing_df.equals(test_testing_fulltest_df)
+        self.assertEqual(check_validation, True, "DataGetter.get_testing_data: expecting True")
 
+    # integration test - does get_testing_data() return True indicating success
+    def test_integ_json_to_df_true(self):
+        # mock the requests.get() method to return a status code of 200 and test_testing_fulltest_json
+        with mock.patch('covid_ml.data_ops.requests.get') as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.json.return_value = test_testing_fulltest_json
+            validation_obj = DataGetter()
+            check_validation = validation_obj.get_testing_data()
+        
+        self.assertEqual(check_validation, True, "DataGetter.get_testing_data: expecting True")
+    
+    # integration test - does get_testing_data() return none indicating something went wrong
+    def test_integ_json_to_df_none(self):
+        # mock the requests.get() method to return a status code of 404
+        with mock.patch('covid_ml.data_ops.requests.get') as mock_get:
+            mock_get.return_value.status_code = 404
+            mock_get.return_value.json.return_value = test_testing_fulltest_json
+            validation_obj = DataGetter()
+            check_validation = validation_obj.get_casecount_data()
+        
+        self.assertEqual(check_validation, None, "DataGetter.get_testing_data: expecting True")
     
 # testing the get_icu_16_data() method
 class TestDataGetterGetIcu16Data(unittest.TestCase):
@@ -144,8 +218,66 @@ class TestDataGetterGetIcu16Data(unittest.TestCase):
         check_validation = validation_object.get_icu_16_data()
         self.assertEqual(check_validation, None, "DataGetter.get_icu_16_data: Expecting None")
 
+    # integration test - does the input json match the expected output dataframe
+    def test_integ_json_to_df_equal(self):
+        # mock the requests.get() method to return a status code of 200 and test_icu_16_fulltest_json
+        with mock.patch('covid_ml.data_ops.requests.get') as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.json.return_value = test_icu_16_fulltest_json
+            validation_obj = DataGetter()
+            validation_obj.get_icu_16_data()
+
+        check_validation = validation_obj.icu_16_df.equals(test_icu_16_fulltest_df)
+        self.assertEqual(check_validation, True, "DataGetter.get_icu_16_data: expecting True")
+
+    # integration test - does get_icu_16_data() return True indicating success
+    def test_integ_json_to_df_true(self):
+        # mock the requests.get() method to return a status code of 200 and test_icu_16_fulltest_json
+        with mock.patch('covid_ml.data_ops.requests.get') as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.json.return_value = test_icu_16_fulltest_json
+            validation_obj = DataGetter()
+            check_validation = validation_obj.get_icu_16_data()
+        
+        self.assertEqual(check_validation, True, "DataGetter.get_icu_16_data: expecting True")
+    
+    # integration test - does get_icu_16_data() return none indicating something went wrong
+    def test_integ_json_to_df_none(self):
+        # mock the requests.get() method to return a status code of 404 and test_icu_16_fulltest_json
+        with mock.patch('covid_ml.data_ops.requests.get') as mock_get:
+            mock_get.return_value.status_code = 404
+            mock_get.return_value.json.return_value = test_icu_16_fulltest_json
+            validation_obj = DataGetter()
+            check_validation = validation_obj.get_icu_16_data()
+        
+        self.assertEqual(check_validation, None, "DataGetter.get_icu_16_data: expecting True")
+
+
 # testing the combine_model_df() method
-# class TestDataGetterCombineModelDf(unittest.TestCase):
+class TestDataGetterCombineModelDf(unittest.TestCase):
+
+    # test that we get the model_data_df dataframe we expect based on the test dataframes provided
+    def test_integ_model_data_df_equal(self):
+        validation_obj = DataGetter()
+        validation_obj.icu_16_df = test_icu_16_fulltest_df
+        validation_obj.casecount_df = test_casecount_fulltest_df
+        validation_obj.testing_df = test_testing_fulltest_df
+        validation_obj.combine_model_df()
+        check_validation = validation_obj.model_data_df.equals(test_model_data_df)
+
+        self.assertEqual(check_validation, True, "DataGetter.combine_model_df: expecting True")
+
+    # test that we get the independent_df dataframe we expect based on the test dataframes provided
+    def test_integ_model_data_df_equal(self):
+        validation_obj = DataGetter()
+        validation_obj.icu_16_df = test_icu_16_fulltest_df
+        validation_obj.casecount_df = test_casecount_fulltest_df
+        validation_obj.testing_df = test_testing_fulltest_df
+        validation_obj.combine_model_df()
+        check_validation = validation_obj.independent_df.equals(test_independent_df)
+
+        self.assertEqual(check_validation, True, "DataGetter.combine_model_df: expecting True")
+
 
 
 
