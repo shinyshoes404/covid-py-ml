@@ -253,7 +253,7 @@ class TestDataGetterGetIcu16Data(unittest.TestCase):
         self.assertEqual(check_validation, None, "DataGetter.get_icu_16_data: expecting True")
 
 
-# testing the combine_model_df() method
+# testing the combine_model_df() and smooth_df() methods
 class TestDataGetterCombineModelDf(unittest.TestCase):
 
     # test that we get the model_data_df dataframe we expect based on the test dataframes provided
@@ -280,6 +280,5 @@ class TestDataGetterCombineModelDf(unittest.TestCase):
 
 
 
-
 if __name__ == "__main__":
-        unittest.main()
+    unittest.main()
