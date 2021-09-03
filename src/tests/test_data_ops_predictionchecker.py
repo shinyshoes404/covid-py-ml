@@ -1,4 +1,5 @@
 import unittest, mock
+from datetime import datetime
 
 
 # import PredictionChecker class for testing
@@ -28,12 +29,24 @@ class TestPredictionCheckerGetMaxPredictionData(unittest.TestCase):
     # no predictions have been made -> max predict date returns []
     @mock.patch('covid_ml.data_ops.sqlite3.connect')
     @mock.patch("covid_ml.data_ops.DbChecker.check_for_db", return_value=True)
-    def test_no_data_none_2(self,mock_db_checker, mocksql_conn):
+    def test_no_data_empty_list(self,mock_db_checker, mocksql_conn):
         mocksql_conn.return_value.cursor().fetchone.return_value = []
         check_obj = PredictionChecker()
         check_val = check_obj.get_max_prediction_date()
 
         self.assertEqual(check_val, None, "No prediction data in DB, returned [], expecting None")
+
+    # max prediction date of '2021-01-05 00:00:00'
+    @mock.patch('covid_ml.data_ops.sqlite3.connect')
+    @mock.patch("covid_ml.data_ops.DbChecker.check_for_db", return_value=True)
+    def test_max_pred_found(self, mock_db_checker, mocksql_conn):
+        mocksql_conn.return_value.cursor().fetchone.return_value = ('2021-01-05 00:00:00',)
+        check_obj = PredictionChecker()
+        check_val = check_obj.get_max_prediction_date()
+
+        self.assertEqual(check_val, datetime.strptime('2021-01-05 00:00:00', "%Y-%m-%d %H:%M:%S"), "2021-01-05 returned, expecting 2021-01-05")
+
+
 
 if __name__ == "__main__":
     unittest.main()
