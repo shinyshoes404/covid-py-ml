@@ -1,4 +1,4 @@
-import unittest, mock
+import unittest, mock, os, platform
 from datetime import datetime, date
 
 # import test data
@@ -48,12 +48,13 @@ class TestPredictionCheckerGetMaxPredictionData(unittest.TestCase):
 
         self.assertEqual(check_val, datetime.strptime('2021-01-05 00:00:00', "%Y-%m-%d %H:%M:%S"), "2021-01-05 returned from DB, expecting 2021-01-05")
 
-
+# mock check_for_db to prevent DbChecker (called inside PredictionChecker) from creating a db dir
+@mock.patch("covid_ml.data_ops.DbChecker.check_for_db", return_value=True)
 class TestPredictionCheckerGetPredictionData(unittest.TestCase):
 
     # no current predictions, mock today() so that 2 rows are returned in the final dataframe
-    @mock.patch('covid_ml.data_ops.date', mock.Mock(today=mock.Mock(return_value=date(2021, 9, 3))))
-    def test_no_predictions(self):
+    @mock.patch('covid_ml.data_ops.date', mock.Mock(today=mock.Mock(return_value=date(2021, 9, 3)))) # I have no idea why I don't have to pass this mock into the function like other mocks
+    def test_no_predictions(self, mock_db_checker):
         check_obj = PredictionChecker()
         check_val = check_obj.get_prediction_data(None, test_independent_df)
 
@@ -61,7 +62,7 @@ class TestPredictionCheckerGetPredictionData(unittest.TestCase):
     
     # no current predictions, mock today() so that independent data is too old
     @mock.patch('covid_ml.data_ops.date', mock.Mock(today=mock.Mock(return_value=date(2021, 9, 22))))
-    def test_no_predictions_old_independent(self):
+    def test_no_predictions_old_independent(self, mock_db_checker):
         check_obj = PredictionChecker()
         check_val = check_obj.get_prediction_data(None, test_independent_df)
 
@@ -69,7 +70,7 @@ class TestPredictionCheckerGetPredictionData(unittest.TestCase):
 
     # max current prediction 2021-09-16 (13 days past the mocked current date)
     @mock.patch('covid_ml.data_ops.date', mock.Mock(today=mock.Mock(return_value=date(2021, 9, 3))))
-    def test_no_predictions_one_row(self):
+    def test_no_predictions_one_row(self, mock_db_checker):
         check_obj = PredictionChecker()
         check_val = check_obj.get_prediction_data(datetime(2021, 9, 16, 0, 0, 0), test_independent_df)
 
