@@ -4,7 +4,7 @@ import unittest, mock, os, platform
 # import class to test
 from db_ops.db_ops import DbChecker
 
-@mock.patch('db_ops.db_ops.DbConfig') # create mock DbConfig for entire clas
+@mock.patch('db_ops.db_ops.DbConfig') # create mock DbConfig for entire class
 class TestDbChecker(unittest.TestCase):
     def setUp(self):
         # set a new db dir and file path for testing
