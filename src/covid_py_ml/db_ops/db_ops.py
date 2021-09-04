@@ -53,7 +53,7 @@ class DbBuilder:
                                                                         model_mv_avg_days INTEGER NOT NULL
                                                                         );''')
 
-                # create a table to house our icu utilization prediction
+                # create a table to house our icu utilization predictions
                 cursor.execute('''CREATE TABLE IF NOT EXISTS model_prediction (row_id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                                                 model_id INTEGER NOT NULL,
                                                                                 icu_16_prediction REAL NOT NULL,
@@ -80,7 +80,7 @@ class ModelDataAdder:
         
 
     def add_data(self):
-
+        self.rollback = False
         print("Attempting to insert data for model with date {0}".format(self.model_date.strftime("%Y-%m-%d")))
 
         ## -- build sql for model table -- ##
@@ -141,7 +141,8 @@ class ModelDataAdder:
         except Exception as e:
             connection.rollback()
             print(e)
-            print("Error: Rolling back all database updates for model_id: {0}  model_date: {1}\n".format(self.model_id, self.model_date.strftime("%Y-%m-%d")))            
+            print("Error: Rolling back all database updates")
+            self.rollback = True            
 
         finally:
             if cursor:
