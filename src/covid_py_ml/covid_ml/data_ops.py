@@ -1,7 +1,7 @@
 from ml_config.ml_config import DbConfig, MlConfig
 from db_ops.db_ops import DbChecker
 import requests, pandas as pd, json, sqlite3
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 
 class DataGetter:
@@ -194,7 +194,7 @@ class PredictionChecker:
         # in order to predict today's (published tomorrow) icu utilization level
 
         # get today's date (based on this machine's timezone), keeping datetime format, but trimming off hours, min, sec, milisec for easier date math and comparison
-        self.today_date = datetime.strptime(datetime.today().date().strftime("%Y-%m-%d"),"%Y-%m-%d")
+        self.today_date = datetime.strptime(date.today().strftime("%Y-%m-%d"),"%Y-%m-%d")
 
         # determine the lower bound that should be used when searching for eligible independent variable data by date
         # if no predictions have been made yet (None), then use today - 19 days as the lower bound for our independent variable data
@@ -217,6 +217,11 @@ class PredictionChecker:
         # if not, find all of the data that can be used to make a prediction
         prediction_data_df = independent_df[(independent_df['date'] > self.low_bound_ind_data_date) & (independent_df['date'] < self.upper_bound_ind_data_date)]
         
+        # if prediction_data_df is empty, we don't have any independent variable data recent enough to use
+        # for new predictions
+        if prediction_data_df.empty:
+            return False
+
         # this next section came about to deal with two inconsistent issues with Pandas. Something about truth value being ambiguous, and copying a slice.
         # after filtering the data down to what I needed, I am just creating arrays from the filtered data, and building a new dataframe so I can calculate the predict-date
         prediction_data_date = pd.Series(prediction_data_df['date']).tolist()
