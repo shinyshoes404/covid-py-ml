@@ -155,6 +155,8 @@ class ModelDataGetter:
     def __init__(self):
         db_checker = DbChecker()
         self.db_exists = db_checker.check_for_db()
+        # initialize the except_found property
+        self.except_found = False
     
     def get_models(self):
         connection = sqlite3.connect(DbConfig.db_path)
@@ -167,8 +169,8 @@ class ModelDataGetter:
             results = cursor.fetchall()
         
         except:
-            # if we run into an exception, return False
-            return False
+            # set the except_found property to True
+            self.except_found = True
 
         finally:
             if cursor:
@@ -176,6 +178,9 @@ class ModelDataGetter:
             if connection:
                 connection.close()
         
+        if self.except_found == True:
+            return False
+
         if results == [(None,)] or results == []:
             # no data was retrieved from the database, return None
             return None
