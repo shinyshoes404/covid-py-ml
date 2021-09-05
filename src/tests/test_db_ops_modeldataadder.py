@@ -1,8 +1,5 @@
 import unittest, mock, os, platform, sqlite3
-from sqlite3 import IntegrityError
 from datetime import datetime
-
-from pandas.io import sql
 
 from test_data import test_model_data_df, test_predict_data_df, test_predictions
 

@@ -178,7 +178,10 @@ class ModelDataGetter:
             if connection:
                 connection.close()
         
+        # if we ran into an exception, return False
         if self.except_found == True:
+            # set the property back to False in case we need it for another method
+            self.except_found = False
             return False
 
         if results == [(None,)] or results == []:
@@ -205,8 +208,8 @@ class ModelDataGetter:
             results = cursor.fetchall()
         
         except:
-            # if we run into an exception, return False
-            return False
+            # set the except_found property to True
+            self.except_found = True
 
         finally:
             if cursor:
@@ -214,6 +217,12 @@ class ModelDataGetter:
             if connection:
                 connection.close()
         
+        # if we ran into an exception, return False
+        if self.except_found == True:
+            # set the property back to False in case we need it for another method
+            self.except_found = False
+            return False
+
         if results == [(None,)] or results == []:
             # no data was retrieved from the database, return None
             return None
@@ -239,8 +248,8 @@ class ModelDataGetter:
             results = cursor.fetchall()
         
         except:
-            # if we run into an exception, return False
-            return False
+            # set the except_found property to True
+            self.except_found = True
 
         finally:
             if cursor:
@@ -248,6 +257,12 @@ class ModelDataGetter:
             if connection:
                 connection.close()
         
+        # if we ran into an exception, return False
+        if self.except_found == True:
+            # set the property back to False in case we need it for another method
+            self.except_found = False
+            return False
+
         if results == [(None,)] or results == []:
             # no data was retrieved from the database, return None
             return None
