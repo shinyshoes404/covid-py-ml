@@ -40,10 +40,16 @@ def ml_main():
     # repeat prediction dates, data must be > 5 days old to be used for a prediction, and we cannot make a prediction more than 19 days into the future
     predict_data_df = prediction_checker.get_prediction_data(max_predict_date, data_getter.independent_df)
 
-    # if prediction_data is None, then no data was found that is eligible to use for a prediction
+    # if predict_data_df is None, then no data was found that is eligible to use for a prediction
     # otherwise, we should have a pandas data frame to work with
     if predict_data_df is None:
         sys.exit("Exit: No predictions to be made.")
+    
+    # if predict_data_df is False, then there wasn't any independent variable data recent enough
+    # for us to use for a prediction. This might mean that while the api is returning data, it is
+    # not providing updated/new data
+    if predict_data_df is False:
+        sys.exit("Exit: No recent independent variable data. Did we get updated data from the api?")
 
 
     ### -------------- BUILD THE MODEL ------------------ ###

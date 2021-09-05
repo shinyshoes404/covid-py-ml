@@ -117,3 +117,12 @@ test_independent_df = pd.DataFrame([[pd.Timestamp('2021-08-28 00:00:00'),163, 0.
 test_model_data_df = pd.DataFrame([[pd.Timestamp('2021-08-28 00:00:00'),163, 0.5, 134.0, 0.5, .74], 
                                     [pd.Timestamp('2021-08-29 00:00:00'),170, 0.57, 144.0 , 0.51, .66]],
                                     columns=['date','casecount','pos-test-rate','casecount-mv-avg','pos-test-mv-avg','icu-top16-hosp-total-util'])
+        
+
+# sample predict_data_df
+test_predict_data_df = pd.DataFrame([[pd.Timestamp('2021-09-13 00:00:00'), 125.0, 0.5], 
+                                    [pd.Timestamp('2021-09-14 00:00:00'), 120.0, 0.6]],
+                                    columns=['predict-date','casecount-mv-avg','pos-test-mv-avg'])
+
+# sample prediction results
+test_predictions = [[0.833], [0.755]]                                    

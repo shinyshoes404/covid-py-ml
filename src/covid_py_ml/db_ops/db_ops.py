@@ -53,7 +53,7 @@ class DbBuilder:
                                                                         model_mv_avg_days INTEGER NOT NULL
                                                                         );''')
 
-                # create a table to house our icu utilization prediction
+                # create a table to house our icu utilization predictions
                 cursor.execute('''CREATE TABLE IF NOT EXISTS model_prediction (row_id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                                                 model_id INTEGER NOT NULL,
                                                                                 icu_16_prediction REAL NOT NULL,
@@ -80,7 +80,7 @@ class ModelDataAdder:
         
 
     def add_data(self):
-
+        self.rollback = False
         print("Attempting to insert data for model with date {0}".format(self.model_date.strftime("%Y-%m-%d")))
 
         ## -- build sql for model table -- ##
@@ -141,7 +141,8 @@ class ModelDataAdder:
         except Exception as e:
             connection.rollback()
             print(e)
-            print("Error: Rolling back all database updates for model_id: {0}  model_date: {1}\n".format(self.model_id, self.model_date.strftime("%Y-%m-%d")))            
+            print("Error: Rolling back all database updates")
+            self.rollback = True            
 
         finally:
             if cursor:
@@ -154,6 +155,8 @@ class ModelDataGetter:
     def __init__(self):
         db_checker = DbChecker()
         self.db_exists = db_checker.check_for_db()
+        # initialize the except_found property
+        self.except_found = False
     
     def get_models(self):
         connection = sqlite3.connect(DbConfig.db_path)
@@ -166,8 +169,8 @@ class ModelDataGetter:
             results = cursor.fetchall()
         
         except:
-            # if we run into an exception, return False
-            return False
+            # set the except_found property to True
+            self.except_found = True
 
         finally:
             if cursor:
@@ -175,6 +178,12 @@ class ModelDataGetter:
             if connection:
                 connection.close()
         
+        # if we ran into an exception, return False
+        if self.except_found == True:
+            # set the property back to False in case we need it for another method
+            self.except_found = False
+            return False
+
         if results == [(None,)] or results == []:
             # no data was retrieved from the database, return None
             return None
@@ -199,8 +208,8 @@ class ModelDataGetter:
             results = cursor.fetchall()
         
         except:
-            # if we run into an exception, return False
-            return False
+            # set the except_found property to True
+            self.except_found = True
 
         finally:
             if cursor:
@@ -208,6 +217,12 @@ class ModelDataGetter:
             if connection:
                 connection.close()
         
+        # if we ran into an exception, return False
+        if self.except_found == True:
+            # set the property back to False in case we need it for another method
+            self.except_found = False
+            return False
+
         if results == [(None,)] or results == []:
             # no data was retrieved from the database, return None
             return None
@@ -233,8 +248,8 @@ class ModelDataGetter:
             results = cursor.fetchall()
         
         except:
-            # if we run into an exception, return False
-            return False
+            # set the except_found property to True
+            self.except_found = True
 
         finally:
             if cursor:
@@ -242,6 +257,12 @@ class ModelDataGetter:
             if connection:
                 connection.close()
         
+        # if we ran into an exception, return False
+        if self.except_found == True:
+            # set the property back to False in case we need it for another method
+            self.except_found = False
+            return False
+
         if results == [(None,)] or results == []:
             # no data was retrieved from the database, return None
             return None
