@@ -12,17 +12,20 @@ def ml_main():
     check_casecount = data_getter.get_casecount_data()
     # if there is a problem, exit the application
     if check_casecount == None:
-        sys.exit("Exit: Error -- Problem getting case count data")
+        print("Exit: Error -- Problem getting case count data")
+        sys.exit(1)
 
     check_testing = data_getter.get_testing_data()
     # if there is a problem, exit the applicaation
     if check_testing == None:
-        sys.exit("Exit: Error -- Problem getting testing data")
+        print("Exit: Error -- Problem getting testing data")
+        sys.exit(1)
 
     check_icu_16 = data_getter.get_icu_16_data()
     # if there is a problem, exit the application
     if check_icu_16 == None:
-        sys.exit("Exit: Error -- Problem getting icu top 16 data")
+        print("Exit: Error -- Problem getting icu top 16 data")
+        sys.exit(1)
 
     # combine and transform the data we just fetched to get two data frames. One to use for building our regression model, and one with the independent variable data we need for predictions
     data_getter.combine_model_df()
@@ -34,7 +37,8 @@ def ml_main():
     max_predict_date = prediction_checker.get_max_prediction_date()
     # a value of False being returned by get_max_prediction_date() means that our database does not exist yet.
     if max_predict_date == False:
-        sys.exit("Exit: Error -- Your database was not setup correctly. Use db_setup.py to create the database before running ml.py")
+        print("Exit: Error -- Your database was not setup correctly. Use db_setup.py to create the database before running ml.py")
+        sys.exit(1)
 
     # determine the available independent data that we can use to make predictions, keeping in mind that we don't want to
     # repeat prediction dates, data must be > 5 days old to be used for a prediction, and we cannot make a prediction more than 19 days into the future
@@ -43,13 +47,15 @@ def ml_main():
     # if predict_data_df is None, then no data was found that is eligible to use for a prediction
     # otherwise, we should have a pandas data frame to work with
     if predict_data_df is None:
-        sys.exit("Exit: No predictions to be made.")
+        print("Exit: No predictions to be made.")
+        sys.exit(1)
     
     # if predict_data_df is False, then there wasn't any independent variable data recent enough
     # for us to use for a prediction. This might mean that while the api is returning data, it is
     # not providing updated/new data
     if predict_data_df is False:
-        sys.exit("Exit: No recent independent variable data. Did we get updated data from the api?")
+        print("Exit: No recent independent variable data. Did we get updated data from the api?")
+        sys.exit(1)
 
 
     ### -------------- BUILD THE MODEL ------------------ ###

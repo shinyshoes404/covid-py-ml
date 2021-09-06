@@ -136,3 +136,6 @@ class TestModelDataGetterGetModelData(unittest.TestCase):
         check_val = check_obj.get_model_data(1)
         expected_return_val = {'model_data': [{'observation_date':'2021-08-29 00:00:00', 'model_id': 1, 'casecount_mv_avg' : 155.0, 'pos_test_mv_avg' : 0.145, 'icu_top16_total_util':0.85}]}
         self.assertEqual(check_val, expected_return_val, "Expecting specific dictionary to return")
+
+if __name__ == "__main__":
+    unittest.main()

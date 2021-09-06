@@ -37,3 +37,5 @@ class TestDbSetupBuilDb(unittest.TestCase):
         # verify that the database was created in the test location
         self.assertEqual(os.path.isfile(self.DB_PATH), True, "db file should be created, expecting True")
 
+if __name__ == "__main__":
+    unittest.main()

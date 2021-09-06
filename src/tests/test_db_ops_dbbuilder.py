@@ -60,5 +60,6 @@ class TestDbBuilder(unittest.TestCase):
         self.assertEqual(os.path.isfile(self.DB_PATH), True, "db file should have been made, expecting True")
         # the tearDown fixture will clean up the directory and file that get created
 
-
+if __name__ == "__main__":
+    unittest.main()
         
