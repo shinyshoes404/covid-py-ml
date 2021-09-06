@@ -61,3 +61,6 @@ class TestDbChecker(unittest.TestCase):
 
         check_obj = DbChecker()
         self.assertEqual(check_obj.db_exists, True, "db file exists, expecting True")
+
+if __name__ == "__main__":
+    unittest.main()

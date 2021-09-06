@@ -149,3 +149,5 @@ class TestModelDataAdderAddData(unittest.TestCase):
         self.assertEqual(check_obj.rollback, True, "Should cause integrity error in sqlite, expecting True")
 
        
+if __name__ == "__main__":
+    unittest.main()

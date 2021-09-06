@@ -53,4 +53,5 @@ class TestDataModeler(unittest.TestCase):
 
         self.assertEqual(round(check_val[0],2), 9.00, "quadratic, expecting 9.00")
     
-
+if __name__ == "__main__":
+    unittest.main()
