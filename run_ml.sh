@@ -19,13 +19,13 @@ do
         printf "\n"
 
 
-	# determine how many seconds to sleep so that the next routine runs at 15 min past the hour every four hours
+	# determine how many seconds to sleep so that the next routine runs at 15 min past the hour every one hour
 
 	# current epoch in seconds
 	now_seconds=$(date +'%s')
 
 	# determine target date and time with hour, but no minutes
-	target_date_hour=$(date -d "now + 4 hour" +'%m/%d/%Y %H')
+	target_date_hour=$(date -d "now + 1 hour" +'%m/%d/%Y %H')
 
 	# determine the epoch in seconds for the next target time
 	target_seconds=$(date -d "$target_date_hour:15" +'%s')
