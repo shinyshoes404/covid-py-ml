@@ -27,8 +27,8 @@ test_testing_df = test_testing_df.sort_values('testdate').reset_index(drop=True)
 
 
 # json to use for testing - represents raw icu utilization data for the top 16 hospitals provided by the api
-test_icu_16_json = { "01/01/2021" : {"date":"01/01/2021", "icu-top16-hosp-covid-util":0.32,"icu-top16-hosp-total-util":	0.85,"retrieveddate":"01/03/2021 01:00 PM"},
-                    "01/02/2021" : {"date":	"01/02/2021","icu-top16-hosp-covid-util": 0.33, "icu-top16-hosp-total-util":0.86, "retrieveddate":"01/03/2021 01:00 PM"}}
+test_icu_16_json = { "05/01/2021" : {"date":"05/01/2021", "icu-top16-hosp-covid-util":0.32,"icu-top16-hosp-total-util":	0.85,"retrieveddate":"01/03/2021 01:00 PM"},
+                    "05/02/2021" : {"date":	"05/02/2021","icu-top16-hosp-covid-util": 0.33, "icu-top16-hosp-total-util":0.86, "retrieveddate":"01/03/2021 01:00 PM"}}
 
 
 # pandas data frame for tests - represents what is expected from DataGetter.build_df() from the raw json above
