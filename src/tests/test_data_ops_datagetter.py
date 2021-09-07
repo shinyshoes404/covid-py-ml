@@ -209,7 +209,7 @@ class TestDataGetterGetIcu16Data(unittest.TestCase):
         validation_object = DataGetter()
         validation_object.get_icu_16_data()
         # expecting 01/02/2021 to be in the second row (0 index) in the date column
-        self.assertEqual(validation_object.icu_16_df.iloc[1]['offset_date'], pd.Timestamp(2020, 12, 14), "DataGetter.get_icu_16_data: Expecting '12/14/2020'")
+        self.assertEqual(validation_object.icu_16_df.iloc[1]['offset_date'], pd.Timestamp(2021, 4, 13), "DataGetter.get_icu_16_data: Expecting '04/13/2021'")
     
     # are we catching an error response from get_api_data() 
     @mock.patch('covid_ml.data_ops.DataGetter.get_api_data',return_value=["error","connection error"]) # mock get_api_data() to return an error repsonse

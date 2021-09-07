@@ -103,7 +103,8 @@ class DataGetter:
         self.icu_16_df['offset_date'] = self.icu_16_df['date'] - pd.to_timedelta(MlConfig.icu_date_offset,unit='d')
         # only keep the columns we want
         self.icu_16_df = self.icu_16_df[['offset_date','icu-top16-hosp-total-util']]
-
+        # limit our data set to after March, 2021, when the delta variant started spreading in the US significantly
+        self.icu_16_df = self.icu_16_df[(self.icu_16_df['offset_date'] >= pd.Timestamp(2021,4,1,0))]
         # return true to indicate everything worked
         return True
 

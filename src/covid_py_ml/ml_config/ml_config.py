@@ -18,7 +18,7 @@ class MlConfig:
     icu_date_offset = 19
 
     # polynomial degree for our regression model
-    poly_degree = 3
+    poly_degree = 6
 
     # number of days for smoothing data using moving average
     mv_avg_days = 7
