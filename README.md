@@ -16,3 +16,10 @@ dev test coverage
 Use __coverage__ and __unittest__ to run test cases and measure code coverage for just the code written for this project.  
 
 `coverage run --source=src/covid_py_ml -m unittest discover -v -s src/tests`
+
+## Starting the container
+
+### Docker run
+`docker run -itd -e CUTOFF_DATE=2021-04-01 -e MODEL_N=3 --name covid_py_ml -v covid_py_ml_db:/home/covidml/python_apps/apps/data -v covid_py_ml_logs:/home/covidml/covid_py_ml_logs -p 0.0.0.0:8080:8080 covid-py-ml:latest`
+
+### Docker Compose

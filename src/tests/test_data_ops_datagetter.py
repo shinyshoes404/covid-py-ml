@@ -208,7 +208,7 @@ class TestDataGetterGetIcu16Data(unittest.TestCase):
     def test_integ_correct_sort(self, mock_requests_get):
         validation_object = DataGetter()
         validation_object.get_icu_16_data()
-        # expecting 01/02/2021 to be in the second row (0 index) in the date column
+        # expecting 04/13/2021 to be in the second row (0 index) in the date column
         self.assertEqual(validation_object.icu_16_df.iloc[1]['offset_date'], pd.Timestamp(2021, 4, 13), "DataGetter.get_icu_16_data: Expecting '04/13/2021'")
     
     # are we catching an error response from get_api_data() 
