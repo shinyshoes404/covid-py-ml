@@ -1,4 +1,5 @@
-import os, platform
+import os, platform, pandas as pd, sys
+from datetime import datetime
 
 # determine the absolute path to the configuration directory
 # we will use this to keep track of where our sqlite db file is located
@@ -18,13 +19,32 @@ class MlConfig:
     icu_date_offset = 19
 
     # polynomial degree for our regression model
-    poly_degree = 6
+    # If no environment variable is present (None), then this will be assumed as 1, linear
+    if os.environ.get('MODEL_N') == None:
+        poly_degree = 1
+    else:
+        poly_degree = int(os.environ.get('MODEL_N'))
 
     # number of days for smoothing data using moving average
     mv_avg_days = 7
 
     # number of days before data is stabilized and mature for use with predictions
     data_days_to_mature = 4
+
+    try:
+        # data cutoff date -- data used to build the model will be equal to, or newer than this date
+        # if no environment variable is present (None), then all available data will be used (1/1/2020)
+        if os.environ.get('CUTOFF_DATE') == None:
+            data_cuttoff_date = pd.Timestamp(2020, 1, 1, 0)
+        else:
+            data_cuttoff_date = pd.Timestamp(datetime.strptime(os.environ.get('CUTOFF_DATE'), "%Y-%m-%d"))
+
+    except ValueError as e:
+        print("--ERROR--")
+        print("Environment variable CUTTOFF_DATE is the wrong format. Must be 'yyyy-mm-dd'.")
+        print("Either clear your CUTOFF_DATE environment variable, or reset it using the appropriate date format.")
+        print("   Example command: $ export CUTOFF_DATE=2021-02-15\n")
+        sys.exit(1)
 
 
 class DbConfig:

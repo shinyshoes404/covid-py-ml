@@ -104,7 +104,9 @@ class DataGetter:
         # only keep the columns we want
         self.icu_16_df = self.icu_16_df[['offset_date','icu-top16-hosp-total-util']]
         # limit our data set to after March, 2021, when the delta variant started spreading in the US significantly
-        self.icu_16_df = self.icu_16_df[(self.icu_16_df['offset_date'] >= pd.Timestamp(2021,4,1,0))]
+        self.icu_16_df = self.icu_16_df[(self.icu_16_df['offset_date'] >= MlConfig.data_cuttoff_date)]
+        print("\n---------")
+        print(MlConfig.data_cuttoff_date)
         # return true to indicate everything worked
         return True
 
