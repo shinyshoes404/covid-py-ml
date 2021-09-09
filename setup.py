@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='covid-py-ml',
-    version='0.1.3',    
+    version='0.1.4',    
     description="Machine learning application to predict the ICU utilization for the top 16 hospitals in Utah by analyzing data provided by the COVID Tracker suite of services.",
     long_description=readme_long_description,
     long_description_content_type="text/markdown",
