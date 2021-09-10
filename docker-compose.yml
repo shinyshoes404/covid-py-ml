@@ -1,0 +1,21 @@
+version: '3.0'
+
+services:
+ covid-ml:
+  image: covid-py-ml:latest
+  tty: true
+  stdin_open: true
+  # The directoris that we are mapping the volumes to are set in the dockerfile
+  volumes:
+   - db:/home/covidml/python_apps/apps/data
+   - logs:/home/covidml/covid_py_ml_logs
+  ports:
+   - "0.0.0.0:8080:8080"
+  environment:
+   - CUTOFF_DATE=2021-05-01
+   - MODEL_N=1
+
+   
+volumes:
+ db:
+ logs:
