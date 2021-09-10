@@ -1,0 +1,11 @@
+venv_ml/
+.vscode/
+__pycache__/
+.env
+*.egg-info/
+.coverage
+dist/
+build/
+data/
+sqlite3.exe
+htmlcov/
