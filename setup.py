@@ -23,7 +23,7 @@ setup(
         # To install requirements for dev work use 'pip install -e .[dev]'
         'dev': ['coverage', 'mock'],
         # To install requirements for exploring the source code and visualizing the predcition data use 'pip install -e .[explore]'
-        'explore' : ['coverage', 'mock', 'jupyter']
+        'explore' : ['coverage', 'mock', 'jupyter', 'matplotlib']
     },
 
     python_requires = '>=3.8.*,!=3.10.*',
