@@ -5,8 +5,8 @@ with open("README.md", "r") as fh:
 
 setup(
     name='covid-py-ml',
-    version='0.1.4',    
-    description="Machine learning application to predict the ICU utilization for the top 16 hospitals in Utah by analyzing data provided by the COVID Tracker suite of services.",
+    version='0.1.5',    
+    description="A machine learning application to predict the ICU utilization for the top 16 hospitals in Utah by analyzing data provided by the Utah COVID Tracker API.",
     long_description=readme_long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/shinyshoes404/covid-py-ml',
@@ -21,7 +21,9 @@ setup(
 
     extras_require={
         # To install requirements for dev work use 'pip install -e .[dev]'
-        'dev': ['coverage', 'mock']
+        'dev': ['coverage', 'mock'],
+        # To install requirements for exploring the source code and visualizing the predcition data use 'pip install -e .[explore]'
+        'explore' : ['coverage', 'mock', 'jupyter']
     },
 
     python_requires = '>=3.8.*,!=3.10.*',
