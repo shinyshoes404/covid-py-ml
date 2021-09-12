@@ -1,4 +1,5 @@
 venv_ml/
+venv_explore/
 .vscode/
 __pycache__/
 .env
