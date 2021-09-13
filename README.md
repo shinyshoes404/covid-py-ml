@@ -23,7 +23,42 @@ NOTE: This project is just for fun and learning. It should NOT, in any way, be c
 
 ## Quick start guide
 
-### Build the docker image
+The prebuilt docker image can be used to spin up a container running the covid-py-ml application. The docker image is hosted on GitHub at ghcr.io.
+
+Start the container with the following command:  
+
+`docker run -itd -e CUTOFF_DATE=2021-05-01 -e MODEL_N=1 --name covid_py_ml -v covid_py_ml_db:/home/covidml/python_apps/apps/data -v covid_py_ml_logs:/home/covidml/covid_py_ml_logs -p 0.0.0.0:8080:8080 ghcr.io/shinyshoes404/covid-py-ml:latest`  
+
+ - Notice the two optional environment variables listed in the command above
+   - CUTOFF_DATE is the oldest observation date that will be used to build the regression model
+   - MODEL_N is the polynomial degree that will be used for the regression model (MODEL_N=1 indicates a linear model)
+   -  If no environment variables are provided, then all available data will be used and a linear model will be created.
+ - It will take about 3-4 minutes for the container to fully spin up
+ - Two persistent docker volumes will be mapped to store the logs and Sqlite database file
+ - The API will be available via port 8080 at the following endpoints
+    - `http://localhost:8080/ml/api/models` -- provides a list of all models built to date
+    - `http://localhost:8080/ml/api/predictions` -- provides a list of all predictions made to date
+    - `http://localhost:8080/ml/api/model-data/<model id>` -- provides the data used to create the model, where the model id is provided as an integer in place of `<model id>`
+
+
+## Building the docker image yourself
+
+If you don't want to pull the docker image from the GitHub container registry, you can build the image yourself using the Dockerfile provided in this project. Before building the image, you can edit the Dockerfile to change the timezone, default user, and whatever else you want.  
+  
+The Dockerfile will:
+ - Start with Ubuntu 20.04
+ - Run `apt-get update` and `apt-get upgrade`
+ - Set the timezone of the system
+ - Disable the root user
+ - Create the default user to run the app
+ - Install pip3
+ - Copy in the requirements.txt and install required dependencies
+ - Copy in the bash scripts used to run the application
+    - run_db_setup.sh -- creates the sqlite database used by the application
+    - run_api.sh -- starts the api
+    - run_ml.sh -- starts the covid-py-ml machine learning routine
+ 
+### Build the image
 
  - Clone this project by running `git clone https://github.com/shinyshoes404/covid-py-ml.git`
  - Move into the root of this project `cd covid-py-ml`
@@ -80,9 +115,9 @@ Run `coverage report` to see a report of the amount of code covered by the tests
 
 ## Exploring the data
 
-### Installing for explore
+### Installing with explore option
 
-Installing for explore will give you all of the tools you would get from installing for dev and testing, but will also install __jupyter notebook__ and __matplotlib__ to make it easy to work with and visualize our predictions.  
+Installing with the explore option will give you all of the tools you would get from installing for dev and testing, but will also install __jupyter notebook__ and __matplotlib__ to make it easy to work with and visualize our predictions.  
 
  - Clone this project by running `git clone https://github.com/shinyshoes404/covid-py-ml.git`
  - Move into the root of this project `cd covid-py-ml`
@@ -92,7 +127,7 @@ Installing for explore will give you all of the tools you would get from install
 
 ### Start jupyter notebook
 
-Once you have built the docker image and started the container (see Quick Start Guide above), you can use __jupyter notebook__ to fetch the predictions from the container, and compare them to the actual ICU utilization data. The actual ICU utilziation data is pulled from Utah COVID Tracker's API.
+Once you have built the docker image and started the container (see __Quick Start Guide__ or __Building the docker image yourself__ above), you can use __jupyter notebook__ to fetch the predictions from the container, and compare them to the actual ICU utilization data. The actual ICU utilziation data is pulled from Utah COVID Tracker's API.
 
  - From the terminal, move into the `notebook/` directory with `cd notebook`
  - Start Jupyter Notebook by running `jupyter notebook`
