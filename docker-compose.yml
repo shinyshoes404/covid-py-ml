@@ -2,7 +2,7 @@ version: '3.0'
 
 services:
  covid-ml:
-  image: covid-py-ml:latest
+  image: ghcr.io/shinyshoes404/covid-py-ml:latest
   tty: true
   stdin_open: true
   # The directoris that we are mapping the volumes to are set in the dockerfile
