@@ -1,5 +1,10 @@
 # covid-py-ml
 
+# ! Notice - Predictions no longer working !
+At the end of January, the State of Utah changed the way that testing data is published to coronavirus.utah.gov. This made it challenging for the Utah Covid Tracker API to collect COVID testing data. Testing data is a key variable in this prediction model. Even though this machine learning model is no longer able to make active predictions, I think it is a good example of how to create a containerized ML tool with python. I will let it live on as a reference for myself and others for future projects.  
+  
+The specific endpoint that is no longer publishing new data is `https://utahcovidtrack.com/api/icu/top-16`. Test data is only available thorugh 1/26/2022.
+
 ## Overview
 
 covid-py-ml is a machine learning application used to predict the ICU utilization for the top 16 hospitals in Utah by analyzing data provided by the Utah COVID Tracker API. This application also provides a rest API to access the models and predictions it generates. You can find documentation for the Utah COVID Tracker API at https://utahcovidtrack.com/developer/api-docs.  
